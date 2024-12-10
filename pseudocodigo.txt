@@ -1,0 +1,146 @@
+PROGRAMA HotelLidotel
+
+INICIALIZAR
+    Definir MaxHabitacionesIndividual = 145
+    Definir MaxHabitacionesAcompanado = 144
+    Definir MaxHabitacionesGrupoFamilia = 144
+
+    Definir CostFamilyRoom = 200
+    Definir CostSencilla = 60
+    Definir CostDoble = 120
+    Definir CostSuite = 300
+
+    Definir listaIndividual, listaAcompanado, listaGrupoFamilia como punteros a Cliente
+    Definir habitacionesIndividual[MaxHabitacionesIndividual], habitacionesAcompanado[MaxHabitacionesAcompanado], habitacionesGrupoFamilia[MaxHabitacionesGrupoFamilia] como booleanos
+
+    InicializarHabitaciones()
+    Escribir "Bienvenido al Hotel Lidotel"
+    Leer tecla
+
+MIENTRAS opción no sea 5
+    MOSTRAR menú principal
+    LEER opción
+
+    SEGÚN opción del usuario
+        CASO 1: Nuevo cliente
+            Mostrar menú para seleccionar tipo de reserva
+            Leer tipoReservacion
+
+            SEGÚN tipoReservacion
+                CASO 1: Cliente Individual
+                    Llamar a registrarCliente(listaIndividual, habitacionesIndividual, 'Individual')
+
+                CASO 2: Cliente Acompanado
+                    Llamar a registrarClienteAcompanado(listaAcompanado, habitacionesAcompanado)
+
+                CASO 3: Cliente Grupo/Familia
+                    Llamar a registrarClienteGrupoFamilia(listaGrupoFamilia, habitacionesGrupoFamilia)
+            FIN SEGÚN
+
+        CASO 2: Ver clientes registrados
+            Mostrar todos los clientes registrados
+            Escribir "Presione Enter para continuar..."
+            Leer tecla
+
+        CASO 3: Buscar cliente por cédula
+            Mostrar "Seleccione la lista de clientes"
+            Leer tipoReservacion
+
+            SEGÚN tipoReservacion
+                CASO 1: Llamar a buscarCliente(listaIndividual)
+                CASO 2: Llamar a buscarCliente(listaAcompanado)
+                CASO 3: Llamar a buscarCliente(listaGrupoFamilia)
+            FIN SEGÚN
+
+        CASO 4: Cancelar reserva
+            Mostrar "Seleccione la lista de clientes"
+            Leer tipoReservacion
+
+            SEGÚN tipoReservacion
+                CASO 1: Llamar a cancelarReserva(listaIndividual, habitacionesIndividual)
+                CASO 2: Llamar a cancelarReserva(listaAcompanado, habitacionesAcompanado)
+                CASO 3: Llamar a cancelarReserva(listaGrupoFamilia, habitacionesGrupoFamilia)
+            FIN SEGÚN
+
+        CASO 5: 
+            Escribir "Gracias por visitar el Hotel Lidotel. Esperamos verlo pronto!"
+            Escribir "Presione Enter para salir..."
+            Leer tecla
+            Establecer continuar a falso
+
+        DE OTRO MODO:
+            Mostrar mensaje de opción inválida
+    FIN SEGÚN
+FIN MIENTRAS
+
+// Procedimientos
+
+PROCEDIMIENTO InicializarHabitaciones()
+    PARA cada habitación en habitacionesIndividual
+        Asignar habitacionesIndividual[i] = false
+    FIN PARA
+    PARA cada habitación en habitacionesAcompanado
+        Asignar habitacionesAcompanado[i] = false
+    FIN PARA
+    PARA cada habitación en habitacionesGrupoFamilia
+        Asignar habitacionesGrupoFamilia[i] = false
+    FIN PARA
+FIN PROCEDIMIENTO
+
+PROCEDIMIENTO registrarCliente(var lista: ClientePtr, var habitaciones: array de boolean, tipo: string)
+    Crear nuevo cliente
+    Validar y leer datos del cliente (nombre, apellido, cédula, email, teléfono, días, tipo habitación)
+    Asignar habitación disponible
+    Calcular costo total de estadía
+    Guardar cliente en archivo
+    Añadir cliente a la lista
+    Escribir mensaje de confirmación
+FIN PROCEDIMIENTO
+
+PROCEDIMIENTO registrarClienteAcompanado(var lista: ClientePtr, var habitaciones: array de boolean)
+    Llamar a registrarCliente para el primer cliente
+    Llamar a registrarCliente para el segundo cliente (acompañado)
+FIN PROCEDIMIENTO
+
+PROCEDIMIENTO registrarClienteGrupoFamilia(var lista: ClientePtr, var habitaciones: array de boolean)
+    Leer cantidad de adultos
+    PARA cada adulto, llamar a registrarCliente
+    FIN PARA
+    Leer si tiene hijos
+    SI tiene hijos
+        Leer cantidad de hijos
+        PARA cada hijo, llamar a registrarCliente
+        FIN PARA
+    FIN SI
+FIN PROCEDIMIENTO
+
+PROCEDIMIENTO mostrarClientes(lista: ClientePtr)
+    MIENTRAS cliente no sea nil
+        Escribir datos del cliente
+        Cliente = cliente.siguiente
+    FIN MIENTRAS
+FIN PROCEDIMIENTO
+
+PROCEDIMIENTO buscarCliente(lista: ClientePtr)
+    Leer cédula a buscar
+    Buscar cliente en lista
+    SI cliente encontrado
+        Escribir datos del cliente
+    SI NO
+        Escribir "Cliente no encontrado"
+    FIN SI
+FIN PROCEDIMIENTO
+
+PROCEDIMIENTO cancelarReserva(var lista: ClientePtr, var habitaciones: array de boolean)
+    Leer cédula a cancelar
+    Buscar cliente en lista
+    SI cliente encontrado
+        Liberar habitación
+        Eliminar cliente de la lista
+        Escribir "Reserva cancelada exitosamente"
+    SI NO
+        Escribir "Cliente no encontrado"
+    FIN SI
+FIN PROCEDIMIENTO
+
+FIN PROGRAMA
